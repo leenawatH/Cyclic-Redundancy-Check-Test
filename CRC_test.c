@@ -3,9 +3,8 @@
 #include <stdlib.h>
 #include <string.h>
 const char* findCRC(){
-  char x[1] = "1";
   char crc[20];
-  do{
+
     printf("Enter CRC type : ");
     scanf("%s", &crc);
     char crc32[] = "CRC-32", crc24[] = "CRC-24", crc16[] = "CRC-16", re16[] = "Reversed-CRC-16" , crc8[] = "CRC-8", crc4[] = "CRC-4";
@@ -23,8 +22,8 @@ const char* findCRC(){
       return "11111";
     }else{
       printf("Incorrect\n");
+      findCRC();
     }
-  }while(x[1] == "1");
   return 0;
 }
 
@@ -54,7 +53,6 @@ int main(void) {
       printf("Less digit!!!\n");
     }
   }while (count < word_size);
-  printf("Number of digits: %d\n", count);
   long long data[count];
   for(int i = count-1; i >= 0; i--){
     long long temp = a%10;
@@ -66,18 +64,14 @@ int main(void) {
   }
   printf("\n");
   const char *div = findCRC();
-  long long divide = atoll(div);
-  printf("%d",divide);
   int data_div[strlen(div)];
-  for(int i = strlen(div)-1; i >= 0; i--){
-    long long temp = divide%10;
-    divide /=10;
-    data_div[i] = temp;
+  for(int i = 0; i < strlen(div) ; i++){
+    if(div[i] == '0'){
+      data_div[i] = 0;
+    }else{
+      data_div[i] = 1;
+    }
   }
-  for(int i = 0;i< strlen(div); i++){
-    printf("%d",data_div[i]);
-  }
-  printf("\n");
   int size_divided = count + strlen(div)-1 ;
   int divided[size_divided];
   for(int i = 0; i < count; i++){
@@ -86,7 +80,7 @@ int main(void) {
   for(int i = count; i < size_divided; i++){
     divided[i] = 0;
   }
-  
+  printf("divided = ");
   for(int i = 0; i < strlen(div)-1+count; i++){
     printf("%d",divided[i]);
   }
@@ -97,14 +91,65 @@ int main(void) {
   }
   int then[strlen(div)];
   for(int j = 0; j< count ; j++){
-    for(int i = 0; i <= strlen(div); i++){
-      then[i] = xor(temps[i],data_div[1]);
+    for(int i = 1; i < strlen(div); i++){
+      if(temps[0] == 1){
+        then[i-1] = xor(temps[i],data_div[i]);
+      }else{
+        then[i-1] = xor(temps[i],0);
+      }
+      
     }
+    then[strlen(div)-1] = divided[strlen(div)+j];
     for(int i = 0; i < strlen(div); i++){
       temps[i] = then[i];
     }
   }
+  int result_encode[size_divided];
+  for(int i = 0; i < count; i++){
+      result_encode[i] = data[i];
+  }
+  int num = 0;
+  for(int i = count; i < size_divided; i++){
+      result_encode[i] = then[num];
+      num++;
+  }
+  //decoder
+  printf("Number with reminder : ");
+  for(int i = 0; i < size_divided; i++){
+      printf("%d",result_encode[i]);
+  }
+  printf("\n");
+  int decode[strlen(div)];
   for(int i = 0; i < strlen(div); i++){
-      printf("%d",then[i]);
+    decode[i] = result_encode[i];
+  }
+  int then_decode[strlen(div)];
+  for(int j = 0; j< count ; j++){
+    for(int i = 1; i < strlen(div); i++){
+      if(decode[0] == 1){
+        then_decode[i-1] = xor(decode[i],data_div[i]);
+      }else{
+        then_decode[i-1] = xor(decode[i],0);
+      }
+      
+    }
+    then_decode[strlen(div)-1] = result_encode[strlen(div)+j];
+    for(int i = 0; i < strlen(div); i++){
+      decode[i] = then_decode[i];
+    }
+    }
+  int check0 = 0;
+    for(int i = 0; i < strlen(div)-1; i++){
+      if(then_decode[i] != 0){
+        break;
+      }else{
+        check0++;
+      }
+    }
+    if(check0 == strlen(div)-1){
+      printf("Pass");
+    }else{
+      printf("Fail");
   }
 }
+
