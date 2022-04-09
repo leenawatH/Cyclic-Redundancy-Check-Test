@@ -9,7 +9,7 @@ int random(int upper,int lower){
   srand(time(0));
   ran = (rand() % (upper - lower +1)) + lower;
   
-  return 7;
+  return ran;
 }
 const char *findCRC()
 {
@@ -66,6 +66,7 @@ int main(void)
 {
   long long n, a;
   int word_size = 5, count;
+  //input
   do
   {
     count = 0;
@@ -82,6 +83,7 @@ int main(void)
       printf("Less digit!!!\n");
     }
   } while (count < word_size);
+  //set data from one data to array
   long long data[count];
   for (int i = count - 1; i >= 0; i--)
   {
@@ -89,7 +91,10 @@ int main(void)
     a /= 10;
     data[i] = temp;
   }
+  //get CRC type of divide
+  //eg. input = "CRC-32"
   const char *div = findCRC();
+  //turn string from polynomial from question(set just result in type binary in funtion findCRC()) to array
   int data_div[strlen(div)];
   for (int i = 0; i < strlen(div); i++)
   {
@@ -102,6 +107,7 @@ int main(void)
       data_div[i] = 1;
     }
   }
+  //set size for codeword with remainder
   int size_divided = count + strlen(div) - 1;
   int divided[size_divided];
   for (int i = 0; i < count; i++)
@@ -119,6 +125,7 @@ int main(void)
     printf("%d", divided[i]);
   }
   printf("\n");
+  //divide process
   int temps[strlen(div)];
   for (int i = 0; i < strlen(div); i++)
   {
@@ -144,6 +151,7 @@ int main(void)
       temps[i] = then[i];
     }
   }
+  //make codeword with remainder
   int result_encode[size_divided];
   for (int i = 0; i < count; i++)
   {
@@ -155,17 +163,18 @@ int main(void)
     result_encode[i] = then[num];
     num++;
   }
-  // decoder
   printf("Number with reminder : ");
   for (int i = 0; i < size_divided; i++)
   {
     printf("%d", result_encode[i]);
   }
   printf("\n");
+  //set random number for simulation data was damaged
   printf("If random number is 7,8,9,10 : Data will change for some position\n");
   printf("Random number : ");
   int x  =random(10,1);
   printf("%d\n",x);
+  //if random num in more than 7 the data was damaged and change number some position
   if(x >= 7){
     int y  =random(size_divided,5);
     if(result_encode[y] == 0){
@@ -180,6 +189,7 @@ int main(void)
     }
     printf("\n");
   }
+  //do Checker process
   int decode[strlen(div)];
   for (int i = 0; i < strlen(div); i++)
   {
@@ -205,6 +215,7 @@ int main(void)
       decode[i] = then_decode[i];
     }
   }
+  //check the result that was damaged or not and print the result
   int check0 = 0;
   for (int i = 0; i < strlen(div) - 1; i++)
   {
