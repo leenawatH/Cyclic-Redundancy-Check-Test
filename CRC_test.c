@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+
 int random(int upper,int lower){
   int ran;
   
@@ -11,6 +12,7 @@ int random(int upper,int lower){
   
   return ran;
 }
+
 const char *findCRC()
 {
   char crc[20];
