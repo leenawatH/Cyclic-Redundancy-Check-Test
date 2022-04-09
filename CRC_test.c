@@ -5,10 +5,11 @@
 #include <time.h>
 int random(int upper,int lower){
   int ran;
+  
   srand(time(0));
   ran = (rand() % (upper - lower +1)) + lower;
   
-  return ran;
+  return 7;
 }
 const char *findCRC()
 {
@@ -61,7 +62,7 @@ int xor (int a, int b) {
   return c;
 }
 
-    int main(void)
+int main(void)
 {
   long long n, a;
   int word_size = 5, count;
